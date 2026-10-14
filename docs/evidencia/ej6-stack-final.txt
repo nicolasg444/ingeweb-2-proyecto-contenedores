@@ -1,0 +1,23 @@
+===== Ejercicio 6, Pasos 2-3 + reto: stack final con secretos, Redis y rol de mínimo privilegio =====
+$ docker compose down -v   # el volumen se inicializó con otra contraseña: empezar de cero
+
+$ docker compose -f compose.yaml up -d --build
+ Container mercado-vecino-api-1 Healthy 
+ Container mercado-vecino-api-1 Started 
+ Container mercado-vecino-db-1 Healthy 
+ Container mercado-vecino-db-1 Started 
+ Container mercado-vecino-redis-1 Healthy 
+ Container mercado-vecino-redis-1 Started 
+ Container mercado-vecino-web-1 Healthy 
+ Container mercado-vecino-web-1 Started 
+
+real	0m13.617s
+user	0m0.060s
+sys	0m0.091s
+
+$ docker compose ps
+NAME                     IMAGE                STATUS                    PORTS
+mercado-vecino-api-1     mercado-api:1.0      Up 5 seconds (healthy)    8000/tcp
+mercado-vecino-db-1      postgres:17-alpine   Up 10 seconds (healthy)   5432/tcp
+mercado-vecino-redis-1   redis:7.4-alpine     Up 10 seconds (healthy)   6379/tcp
+mercado-vecino-web-1     mercado-web:1.0      Up 2 seconds (healthy)    0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp

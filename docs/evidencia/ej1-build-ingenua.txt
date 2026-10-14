@@ -1,0 +1,141 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.ingenuo
+#1 transferring dockerfile: 220B done
+#1 WARN: SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ENV "DB_PASSWORD") (line 5)
+#1 WARN: JSONArgsRecommended: JSON arguments recommended for CMD to prevent unintended behavior related to OS signals (line 7)
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:latest
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 136B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 506B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/python:latest@sha256:16e7e5fc4e79fe153c818ac9b46595c7addddaad744d49595377836e300ad1c6
+#5 resolve docker.io/library/python:latest@sha256:16e7e5fc4e79fe153c818ac9b46595c7addddaad744d49595377836e300ad1c6 0.0s done
+#5 CACHED
+
+#6 [2/4] COPY . /app
+#6 DONE 0.1s
+
+#7 [3/4] WORKDIR /app
+#7 DONE 0.1s
+
+#8 [4/4] RUN pip install -r requirements.txt
+#8 1.454 Collecting fastapi==0.143.1 (from -r requirements.txt (line 1))
+#8 1.547   Downloading fastapi-0.143.1-py3-none-any.whl.metadata (26 kB)
+#8 1.619 Collecting uvicorn==0.54.0 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 1.630   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#8 1.674 Collecting psycopg==3.3.6 (from psycopg[binary]==3.3.6->-r requirements.txt (line 3))
+#8 1.686   Downloading psycopg-3.3.6-py3-none-any.whl.metadata (4.4 kB)
+#8 1.734 Collecting redis==8.1.0 (from -r requirements.txt (line 4))
+#8 1.746   Downloading redis-8.1.0-py3-none-any.whl.metadata (16 kB)
+#8 1.794 Collecting starlette>=0.46.0 (from fastapi==0.143.1->-r requirements.txt (line 1))
+#8 1.805   Downloading starlette-1.8.0-py3-none-any.whl.metadata (6.6 kB)
+#8 1.904 Collecting pydantic>=2.9.0 (from fastapi==0.143.1->-r requirements.txt (line 1))
+#8 1.915   Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+#8 1.979 Collecting typing-extensions>=4.8.0 (from fastapi==0.143.1->-r requirements.txt (line 1))
+#8 1.991   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#8 2.028 Collecting typing-inspection>=0.4.2 (from fastapi==0.143.1->-r requirements.txt (line 1))
+#8 2.038   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#8 2.074 Collecting annotated-doc>=0.0.2 (from fastapi==0.143.1->-r requirements.txt (line 1))
+#8 2.086   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#8 2.133 Collecting opentelemetry-api>=1.44.0 (from fastapi==0.143.1->-r requirements.txt (line 1))
+#8 2.146   Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+#8 2.191 Collecting click>=7.0 (from uvicorn==0.54.0->uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 2.253   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#8 2.301 Collecting h11>=0.8 (from uvicorn==0.54.0->uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 2.313   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#8 2.449 Collecting psycopg-binary==3.3.6 (from psycopg[binary]==3.3.6->-r requirements.txt (line 3))
+#8 2.541   Downloading psycopg_binary-3.3.6-cp315-cp315-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#8 2.591 Collecting httptools>=0.8.0 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 2.605   Downloading httptools-0.9.0-cp315-cp315-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#8 2.646 Collecting python-dotenv>=0.13 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 2.657   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#8 2.728 Collecting pyyaml>=5.1 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 2.739   Downloading pyyaml-6.0.3.tar.gz (130 kB)
+#8 2.859   Installing build dependencies: started
+#8 4.286   Installing build dependencies: finished with status 'done'
+#8 4.288   Getting requirements to build wheel: started
+#8 5.760   Getting requirements to build wheel: finished with status 'done'
+#8 5.761   Preparing metadata (pyproject.toml): started
+#8 5.961   Preparing metadata (pyproject.toml): finished with status 'done'
+#8 6.003 Collecting uvloop>=0.15.1 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 6.017   Downloading uvloop-0.23.0-cp315-cp315-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#8 6.096 Collecting watchfiles>=0.20 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 6.108   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#8 6.219 Collecting websockets>=13.0 (from uvicorn[standard]==0.54.0->-r requirements.txt (line 2))
+#8 6.232   Downloading websockets-17.2-cp315-cp315-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#8 6.278 Collecting annotated-types>=0.6.0 (from pydantic>=2.9.0->fastapi==0.143.1->-r requirements.txt (line 1))
+#8 6.289   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#8 6.807 Collecting pydantic-core==2.50.1 (from pydantic>=2.9.0->fastapi==0.143.1->-r requirements.txt (line 1))
+#8 6.822   Downloading pydantic_core-2.50.1-cp315-cp315-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
+#8 6.867 Collecting anyio<5,>=4.0.0 (from starlette>=0.46.0->fastapi==0.143.1->-r requirements.txt (line 1))
+#8 6.877   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#8 6.919 Collecting idna>=2.8 (from anyio<5,>=4.0.0->starlette>=0.46.0->fastapi==0.143.1->-r requirements.txt (line 1))
+#8 6.929   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#8 6.959 Downloading fastapi-0.143.1-py3-none-any.whl (144 kB)
+#8 6.990 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#8 7.019 Downloading psycopg-3.3.6-py3-none-any.whl (215 kB)
+#8 7.055 Downloading redis-8.1.0-py3-none-any.whl (560 kB)
+#8 7.092    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 560.6/560.6 kB 12.3 MB/s  0:00:00
+#8 7.103 Downloading psycopg_binary-3.3.6-cp315-cp315-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+#8 7.401    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 17.5 MB/s  0:00:00
+#8 7.413 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#8 7.435 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#8 7.465 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#8 7.490 Downloading httptools-0.9.0-cp315-cp315-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (515 kB)
+#8 7.542 Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+#8 7.564 Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+#8 7.625 Downloading pydantic_core-2.50.1-cp315-cp315-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#8 7.747    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 18.7 MB/s  0:00:00
+#8 7.759 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#8 7.786 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#8 7.813 Downloading starlette-1.8.0-py3-none-any.whl (79 kB)
+#8 7.840 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#8 7.868 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#8 7.891 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#8 7.940 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#8 7.967 Downloading uvloop-0.23.0-cp315-cp315-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.5 MB)
+#8 8.259    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 15.2 MB/s  0:00:00
+#8 8.272 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#8 8.344 Downloading websockets-17.2-cp315-cp315-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (225 kB)
+#8 8.436 Building wheels for collected packages: pyyaml
+#8 8.439   Building wheel for pyyaml (pyproject.toml): started
+#8 13.58   Building wheel for pyyaml (pyproject.toml): finished with status 'done'
+#8 13.59   Created wheel for pyyaml: filename=pyyaml-6.0.3-cp315-cp315-linux_x86_64.whl size=664379 sha256=04270e72172e3bf8b26bfad4bb3e937c0ad27aa09aef2ce2dd968e9a9354b6f3
+#8 13.59   Stored in directory: /root/.cache/pip/wheels/39/c5/03/188d3f8dc792f835b1e767b5e6e0fec41846dc06f6dd368652
+#8 13.59 Successfully built pyyaml
+#8 13.62 Installing collected packages: websockets, uvloop, typing-extensions, redis, pyyaml, python-dotenv, psycopg-binary, psycopg, idna, httptools, h11, click, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, opentelemetry-api, anyio, watchfiles, starlette, pydantic, fastapi
+#8 15.42 
+#8 15.43 Successfully installed annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 click-8.5.0 fastapi-0.143.1 h11-0.16.0 httptools-0.9.0 idna-3.20 opentelemetry-api-1.45.1 psycopg-3.3.6 psycopg-binary-3.3.6 pydantic-2.14.1 pydantic-core-2.50.1 python-dotenv-1.2.4 pyyaml-6.0.3 redis-8.1.0 starlette-1.8.0 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.54.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.2
+#8 15.43 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 DONE 15.7s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 2.7s done
+#9 exporting manifest sha256:b66e9fdd58b673944a9c7db9b29cee1e61615432fa647a321dd52bfec6c613d8 0.0s done
+#9 exporting config sha256:187adfbd1377bcb8bb5653d371cc551d6a09a5c133cdda64cae78e8222c2d448 0.0s done
+#9 exporting attestation manifest sha256:b91c4963736d3909ac6b036c00b1b7c8b2fdb11b75baf423adb0a58d142e59c5
+#9 exporting attestation manifest sha256:b91c4963736d3909ac6b036c00b1b7c8b2fdb11b75baf423adb0a58d142e59c5 0.1s done
+#9 exporting manifest list sha256:394b19407ecddc1c1825b8309bc5468713767003f34f67719bfdb40832a1e822 0.0s done
+#9 naming to docker.io/library/mercado-api:ingenua
+#9 naming to docker.io/library/mercado-api:ingenua done
+#9 unpacking to docker.io/library/mercado-api:ingenua
+#9 unpacking to docker.io/library/mercado-api:ingenua 1.0s done
+#9 DONE 4.0s
+
+ [33m2 warnings found (use docker --debug to expand):
+[0m - SecretsUsedInArgOrEnv: Do not use ARG or ENV instructions for sensitive data (ENV "DB_PASSWORD") (line 5)
+ - JSONArgsRecommended: JSON arguments recommended for CMD to prevent unintended behavior related to OS signals (line 7)
+
+real	0m20.723s
+user	0m0.000s
+sys	0m0.060s

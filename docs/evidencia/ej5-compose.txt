@@ -1,0 +1,103 @@
+# Nota: en este equipo el puerto 8080 lo usa Apache (XAMPP), así que WEB_PORT=8081.
+# En el informe los comandos se muestran como en el enunciado; .env.example deja 8080.
+
+===== Paso 1: .env ignorado por Git =====
+$ git check-ignore -v .env
+.gitignore:2:.env	.env
+
+===== Validación: sin DB_PASSWORD Compose se niega a arrancar =====
+$ docker compose config   # con un .env sin DB_PASSWORD
+error while interpolating services.db.environment.POSTGRES_PASSWORD: required variable DB_PASSWORD is missing a value: Defina DB_PASSWORD en .env
+
+===== Paso 3: validar, levantar y observar =====
+$ docker compose config | grep -i password   # variables ya resueltas
+      DB_PASSWORD: <REDACTADA>
+      REDIS_PASSWORD: no-aplica
+      POSTGRES_PASSWORD: <REDACTADA>
+
+$ docker compose up -d --build
+ Image mercado-api:1.0 Built 
+ Image mercado-web:1.0 Built 
+ Network mercado-vecino_frontend Creating 
+ Volume mercado-vecino_pgdata Creating 
+ Network mercado-vecino_backend Creating 
+ Volume mercado-vecino_pgdata Creating 
+ Network mercado-vecino_frontend Creating 
+ Network mercado-vecino_backend Creating 
+ Volume mercado-vecino_pgdata Created 
+ Volume mercado-vecino_pgdata Created 
+ Network mercado-vecino_frontend Created 
+ Network mercado-vecino_frontend Created 
+ Network mercado-vecino_backend Created 
+ Network mercado-vecino_backend Created 
+ Container mercado-vecino-db-1 Creating 
+ Container mercado-vecino-db-1 Created 
+ Container mercado-vecino-api-1 Creating 
+ Container mercado-vecino-api-1 Created 
+ Container mercado-vecino-web-1 Creating 
+ Container mercado-vecino-web-1 Created 
+ Container mercado-vecino-db-1 Starting 
+ Container mercado-vecino-db-1 Started 
+ Container mercado-vecino-db-1 Waiting 
+ Container mercado-vecino-db-1 Healthy 
+ Container mercado-vecino-api-1 Starting 
+ Container mercado-vecino-api-1 Started 
+ Container mercado-vecino-api-1 Waiting 
+ Container mercado-vecino-api-1 Healthy 
+ Container mercado-vecino-web-1 Starting 
+ Container mercado-vecino-web-1 Started 
+ Container mercado-vecino-db-1 Waiting 
+ Container mercado-vecino-api-1 Waiting 
+ Container mercado-vecino-web-1 Waiting 
+ Container mercado-vecino-api-1 Healthy 
+ Container mercado-vecino-db-1 Healthy 
+ Container mercado-vecino-web-1 Healthy 
+
+real	0m15.064s
+user	0m0.061s
+sys	0m0.060s
+
+$ docker compose ps
+NAME                   IMAGE                STATUS                    PORTS
+mercado-vecino-api-1   mercado-api:1.0      Up 5 seconds (healthy)    8000/tcp
+mercado-vecino-db-1    postgres:17-alpine   Up 11 seconds (healthy)   5432/tcp
+mercado-vecino-web-1   mercado-web:1.0      Up 2 seconds (healthy)    0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+
+$ curl http://localhost:8081/api/tiendas
+[{"id":1,"nombre":"Tienda Doña Rosa","barrio":"Chapinero"},{"id":2,"nombre":"Fruver La Cosecha","barrio":"Teusaquillo"},{"id":3,"nombre":"Panadería El Trigal","barrio":"Suba"},{"id":4,"nombre":"Droguería San Jorge","barrio":"Kennedy"},{"id":5,"nombre":"Miscelánea El Vecino","barrio":"Usaquén"}]
+
+$ docker compose logs api | tail -6
+api-1  | INFO:     Application startup complete.
+api-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+api-1  | INFO:     127.0.0.1:38676 - "GET /health HTTP/1.1" 200 OK
+api-1  | Redis no disponible al leer catalogo:tiendas: Error -2 connecting to redis-inexistente:6379. Name or service not known.
+api-1  | Redis no disponible al guardar catalogo:tiendas: Error -2 connecting to redis-inexistente:6379. Name or service not known.
+api-1  | INFO:     172.19.0.3:59688 - "GET /tiendas HTTP/1.0" 200 OK
+
+===== Paso 4: comprobar el aislamiento =====
+$ docker compose exec api python -c "import socket; print(socket.gethostbyname('db'))"
+172.20.0.2
+
+$ docker compose exec web wget -qO- -T 3 http://db:5432 || echo "web no alcanza db: correcto"
+wget: bad address 'db:5432'
+web no alcanza db: correcto
+
+$ docker compose exec db sh -c 'wget -q -T 3 -O /dev/null https://pypi.org && echo con-internet || echo ...'   # red backend interna
+wget: bad address 'pypi.org'
+db sin salida a internet: correcto
+
+$ docker port mercado-vecino-db-1 ; docker port mercado-vecino-api-1   # sin puertos publicados
+(vacío)
+
+$ docker network ls --filter name=mercado-vecino
+NETWORK ID     NAME                      DRIVER    SCOPE
+31b1dc3695f2   mercado-vecino_backend    bridge    local
+36bffafa8636   mercado-vecino_frontend   bridge    local
+
+$ docker network inspect mercado-vecino_backend --format 'internal={{.Internal}}'
+internal=true
+
+$ docker inspect mercado-vecino-api-1 --format 'ReadOnly={{.HostConfig.ReadonlyRootfs}} CapDrop={{.HostConfig.CapDrop}} SecOpt={{.HostConfig.SecurityOpt}}'
+ReadOnly=true CapDrop=[ALL] SecOpt=[no-new-privileges:true]
+$ docker compose exec api touch /app/prueba   # sistema de archivos de solo lectura
+touch: cannot touch '/app/prueba': Read-only file system

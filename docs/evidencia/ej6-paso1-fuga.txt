@@ -1,0 +1,16 @@
+===== Ejercicio 6, Paso 1: descubrir la fuga (stack del Ejercicio 5, clave de prueba '<REDACTADA>') =====
+$ docker inspect mercado-vecino-api-1 --format '{{json .Config.Env}}'
+["DB_USER=mercado_app","DB_PASSWORD=<REDACTADA>","REDIS_HOST=redis-inexistente","REDIS_PASSWORD=no-aplica","DB_HOST=db","DB_NAME=mercado","PATH=/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin","GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305","PYTHON_VERSION=3.13.16","PYTHON_SHA256=f4b1bfb3c79b5bb11b8d228a12504163b4c0dab4d679828d8f5f26b6cb6ab35d","PYTHONDONTWRITEBYTECODE=1","PYTHONUNBUFFERED=1"]
+
+$ docker compose config | grep -i password
+      DB_PASSWORD: <REDACTADA>
+      REDIS_PASSWORD: no-aplica
+      POSTGRES_PASSWORD: <REDACTADA>
+
+$ docker compose exec api cat /proc/1/environ | tr '\0' '\n' | grep PASSWORD
+DB_PASSWORD=<REDACTADA>
+REDIS_PASSWORD=no-aplica
+
+$ docker inspect mercado-vecino-db-1 --format '{{json .Config.Env}}' | grep -o 'POSTGRES_PASSWORD=[^"]*'
+POSTGRES_PASSWORD=<REDACTADA>
+# => los tres comandos (y el inspect de db) muestran la contraseña en texto plano

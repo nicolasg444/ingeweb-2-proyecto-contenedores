@@ -1,0 +1,66 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.38kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.2s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/python:3.13-slim
+#4 DONE 0.2s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 136B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 5.00kB done
+#6 DONE 0.0s
+
+#7 [builder 1/5] FROM docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
+#7 resolve docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f 0.0s done
+#7 DONE 0.1s
+
+#8 [builder 4/5] COPY requirements.txt .
+#8 CACHED
+
+#9 [builder 5/5] RUN pip install --no-cache-dir -r requirements.txt
+#9 CACHED
+
+#10 [runtime 3/5] WORKDIR /app
+#10 CACHED
+
+#11 [builder 3/5] RUN python -m venv /opt/venv
+#11 CACHED
+
+#12 [runtime 2/5] RUN groupadd --system --gid 10001 app  && useradd --system --uid 10001 --gid app --no-create-home app
+#12 CACHED
+
+#13 [builder 2/5] WORKDIR /build
+#13 CACHED
+
+#14 [runtime 4/5] COPY --from=builder /opt/venv /opt/venv
+#14 CACHED
+
+#15 [runtime 5/5] COPY app/ ./app/
+#15 DONE 0.1s
+
+#16 exporting to image
+#16 exporting layers 0.1s done
+#16 exporting manifest sha256:3dd2f3e88afe57168b15ad0d46aa1675b85e3b5dd86a2ee060604d28804b7399 0.0s done
+#16 exporting config sha256:fe60d6dc1b2edcaf778a250bd07a771c8cf6f550d245561fbc1636db11a61f05 0.0s done
+#16 exporting attestation manifest sha256:5836a114540c977a853f14da7719459031b9d2574c49e267e629f269f8844bec 0.0s done
+#16 exporting manifest list sha256:2fc4e95e1b5bc8cfec7bb11b83b24a754a5f2ac1766ea59d7173bc8122faae87
+#16 exporting manifest list sha256:2fc4e95e1b5bc8cfec7bb11b83b24a754a5f2ac1766ea59d7173bc8122faae87 0.0s done
+#16 naming to docker.io/library/mercado-api:1.0 done
+#16 unpacking to docker.io/library/mercado-api:1.0 0.0s done
+#16 DONE 0.4s
+
+real	0m1.807s
+user	0m0.061s
+sys	0m0.060s

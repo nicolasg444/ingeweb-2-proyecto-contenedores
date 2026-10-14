@@ -1,0 +1,129 @@
+# Mercado Vecino: frontend (Nginx) + API (FastAPI) + PostgreSQL + Redis.
+# Ninguna contraseña aparece en este archivo ni en .env: todas llegan como secretos
+# montados en /run/secrets/ (ver scripts/generar-secretos.sh).
+name: mercado-vecino
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:?Defina DB_NAME en .env}
+      # Superusuario: solo para administrar; la API no lo conoce
+      POSTGRES_USER: ${DB_ADMIN_USER:?Defina DB_ADMIN_USER en .env}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      # Rol de mínimo privilegio que crea db/init/02_rol_app.sh
+      APP_DB_USER: ${DB_USER:?Defina DB_USER en .env}
+      APP_DB_PASSWORD_FILE: /run/secrets/db_app_password
+    secrets: [db_password, db_app_password]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    networks: [backend]
+    healthcheck:
+      # $$ evita que Compose interpole: la variable se resuelve dentro del contenedor
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+      start_interval: 2s
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.4-alpine
+    user: redis
+    # La contraseña se escribe en un archivo de configuración dentro de un tmpfs
+    # (no queda en variables de entorno ni en los argumentos del proceso)
+    command:
+      - sh
+      - -c
+      - |
+        umask 077
+        printf 'requirepass %s\n' "$$(cat /run/secrets/redis_password)" > /tmp/redis.conf
+        exec redis-server /tmp/redis.conf --appendonly yes --save 60 1
+    secrets: [redis_password]
+    volumes:
+      - redisdata:/data
+    networks: [backend]
+    healthcheck:
+      # REDISCLI_AUTH evita poner la contraseña en la línea de comandos de redis-cli
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$(cat /run/secrets/redis_password)\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+      start_interval: 2s
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./api
+      target: runtime
+    image: mercado-api:1.0
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      # config.leer_secreto() busca primero *_FILE
+      DB_PASSWORD_FILE: /run/secrets/db_app_password
+      REDIS_HOST: redis
+      REDIS_PASSWORD_FILE: /run/secrets/redis_password
+      CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-60}
+    secrets: [db_app_password, redis_password]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Única pieza en ambas redes: Nginx la alcanza por frontend, ella alcanza db/redis por backend
+    networks: [backend, frontend]
+    # Si un servicio se detiene, su nombre deja de existir y la búsqueda DNS tardaba 8 s;
+    # así falla en ~1 s (y cache.py omite Redis un rato tras el primer fallo)
+    dns_opt: ["timeout:1", "attempts:1"]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      target: runtime
+    image: mercado-web:1.0
+    # Único puerto publicado: toda petición externa entra por Nginx
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [frontend]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+networks:
+  frontend:
+  backend:
+    # Sin salida a internet y sin puertos publicados
+    internal: true
+
+volumes:
+  pgdata:
+  redisdata:
+
+# Secretos de Compose: archivos ignorados por Git que se montan en /run/secrets/<nombre>
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  db_app_password:
+    file: ./secrets/db_app_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt

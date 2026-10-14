@@ -1,0 +1,47 @@
+$ docker image ls mercado-web
+IMAGE               ID             DISK USAGE   CONTENT SIZE   EXTRA
+mercado-web:1.0     efec606836a2       73.9MB           21MB        
+mercado-web:build   366fa5c1c866        320MB         82.3MB        
+
+$ docker image inspect mercado-web:build --format '{{.Size}}'
+320007771
+$ docker image inspect mercado-web:1.0 --format '{{.Size}}'
+73892880
+
+$ docker run --rm mercado-web:build sh -c 'node --version; du -sh node_modules; ls'
+v22.23.3
+40.6M	node_modules
+dist
+index.html
+nginx.conf
+node_modules
+package-lock.json
+package.json
+src
+vite.config.js
+
+$ docker run --rm mercado-web:build npm run build   # salida de Vite
+transforming...
+✓ 32 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-BMRqdqq9.css    2.53 kB │ gzip:  0.95 kB
+dist/assets/index-PbYX-Ql3.js   146.72 kB │ gzip: 47.43 kB
+✓ built in 677ms
+
+$ docker run --rm mercado-web:1.0 sh -c 'which node npm || echo sin-node; find /usr/share/nginx/html -type f'
+(no hay node ni npm en la imagen final)
+/usr/share/nginx/html/index.html
+/usr/share/nginx/html/50x.html
+/usr/share/nginx/html/assets/index-PbYX-Ql3.js
+/usr/share/nginx/html/assets/index-BMRqdqq9.css
+
+$ docker run --rm mercado-web:1.0 whoami
+nginx
+
+$ docker image inspect mercado-web:1.0 --format '{{.Config.User}} {{json .Config.ExposedPorts}}'
+101 {"8080/tcp":{}}
+
+# Nota posterior (ampliación con Trivy): la imagen final se cambió a nginx-unprivileged:1.30-alpine
+# por vulnerabilidades en 1.27. Tamaño final: 90.3MB

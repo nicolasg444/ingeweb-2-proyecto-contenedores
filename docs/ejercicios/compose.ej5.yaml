@@ -1,0 +1,69 @@
+# Versión del Ejercicio 5 (ANTES de migrar a secretos). Se conserva como registro:
+# la contraseña llega por variable de entorno y el Ejercicio 6 demuestra la fuga.
+# El compose.yaml de la raíz es la versión final (secretos + Redis + rol de mínimo privilegio).
+#
+# Uso (desde la raíz; requiere DB_PASSWORD en un archivo de entorno aparte):
+#   docker compose -f docs/ejercicios/compose.ej5.yaml --project-directory . --env-file <archivo> up -d --build
+name: mercado-vecino
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD en .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Solo el esquema: 02_rol_app.sh pertenece al reto y necesita los secretos
+      - ./db/init/01_esquema.sql:/docker-entrypoint-initdb.d/01_esquema.sql:ro
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./api
+      target: runtime
+    image: mercado-api:1.0
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD:?Defina DB_PASSWORD en .env}
+      # La API final también usa Redis; aquí no hay Redis y la caché queda inactiva
+      REDIS_HOST: redis-inexistente
+      REDIS_PASSWORD: no-aplica
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [backend, frontend]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+
+  web:
+    build: ./frontend
+    image: mercado-web:1.0
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [frontend]
+    restart: unless-stopped
+
+networks:
+  frontend:
+  backend:
+    internal: true
+
+volumes:
+  pgdata:

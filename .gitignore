@@ -1,0 +1,20 @@
+# Credenciales: nunca se versionan
+.env
+secrets/
+
+# Anti-patrón del Ejercicio 1: tiene una contraseña escrita a propósito.
+# Se conserva solo en local para repetir la medición; no entra al repositorio.
+api/Dockerfile.ingenuo
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Node
+node_modules/
+dist/
+
+# Ignorado vacío para simular el Ejercicio 1 "sin .dockerignore" (BuildKit lo prefiere)
+api/Dockerfile.ingenuo.dockerignore

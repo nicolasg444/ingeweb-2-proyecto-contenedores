@@ -1,0 +1,14 @@
+$ docker history --no-trunc mercado-api:test | grep -o 'RUN .*solo-pruebas[^|]*pytest -q'
+DB_PASSWORD=solo-pruebas REDIS_PASSWORD=solo-pruebas pytest -q
+$ docker history --no-trunc mercado-api:1.0 | grep -c solo-pruebas
+0
+$ docker build -t mercado-api:1.0 api   # BuildKit ni siquiera ejecuta la etapa test
+[builder 1/5] FROM docker.io/library/python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
+[builder 2/5] WORKDIR /build
+[builder 3/5] RUN python -m venv /opt/venv
+[builder 4/5] COPY requirements.txt .
+[builder 5/5] RUN pip install --no-cache-dir -r requirements.txt
+[runtime 2/5] RUN groupadd --system --gid 10001 app  && useradd --system --uid 10001 --gid app --no-create-home app
+[runtime 3/5] WORKDIR /app
+[runtime 4/5] COPY --from=builder /opt/venv /opt/venv
+[runtime 5/5] COPY app/ ./app/

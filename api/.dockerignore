@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*
+*.pem
+secrets/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+Dockerfile*

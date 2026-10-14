@@ -1,0 +1,94 @@
+$ docker image ls mercado-api
+IMAGE                 ID             DISK USAGE   CONTENT SIZE   EXTRA
+mercado-api:1.0       1815d0b03c46        286MB         66.8MB        
+mercado-api:ingenua   605d1cc1ff28       1.78GB          466MB        
+mercado-api:test      e11dc070c565        317MB         74.1MB        
+
+$ docker image inspect mercado-api:1.0 --format '{{.Size}}'   # bytes
+285663078
+
+$ docker history mercado-api:1.0
+IMAGE          CREATED              CREATED BY                                      SIZE      COMMENT
+1815d0b03c46   1 second ago         CMD ["uvicorn" "app.main:app" "--host" "0.0.…   0B        buildkit.dockerfile.v0
+<missing>      1 second ago         HEALTHCHECK {Test:[CMD-SHELL python -c "impo…   0B        buildkit.dockerfile.v0
+<missing>      1 second ago         EXPOSE [8000/tcp]                               0B        buildkit.dockerfile.v0
+<missing>      1 second ago         USER app                                        0B        buildkit.dockerfile.v0
+<missing>      1 second ago         COPY app/ ./app/ # buildkit                     32.8kB    buildkit.dockerfile.v0
+<missing>      About a minute ago   COPY /opt/venv /opt/venv # buildkit             85.7MB    buildkit.dockerfile.v0
+<missing>      2 minutes ago        WORKDIR /app                                    8.19kB    buildkit.dockerfile.v0
+<missing>      2 minutes ago        RUN /bin/sh -c groupadd --system --gid 10001…   41kB      buildkit.dockerfile.v0
+<missing>      2 minutes ago        ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFER…   0B        buildkit.dockerfile.v0
+<missing>      8 days ago           CMD ["python3"]                                 0B        buildkit.dockerfile.v0
+<missing>      8 days ago           RUN /bin/sh -c set -eux;  for src in idle3 p…   16.4kB    buildkit.dockerfile.v0
+<missing>      8 days ago           RUN /bin/sh -c set -eux;   savedAptMark="$(a…   40.4MB    buildkit.dockerfile.v0
+<missing>      8 days ago           ENV PYTHON_SHA256=f4b1bfb3c79b5bb11b8d228a12…   0B        buildkit.dockerfile.v0
+<missing>      8 days ago           ENV PYTHON_VERSION=3.13.16                      0B        buildkit.dockerfile.v0
+<missing>      8 days ago           ENV GPG_KEY=7169605F62C751356D054A26A821E680…   0B        buildkit.dockerfile.v0
+<missing>      8 days ago           RUN /bin/sh -c set -eux;  apt-get update;  a…   4.94MB    buildkit.dockerfile.v0
+<missing>      8 days ago           ENV PATH=/usr/local/bin:/usr/local/sbin:/usr…   0B        buildkit.dockerfile.v0
+<missing>      9 days ago           # debian.sh --arch 'amd64' out/ 'trixie' '@1…   87.7MB    debuerreotype 0.17
+
+$ docker history -q mercado-api:1.0 | wc -l
+18
+
+$ docker history --no-trunc mercado-api:1.0 | grep -iE 'password|solo-pruebas'
+(sin coincidencias)
+
+$ docker image inspect mercado-api:1.0 --format '{{json .Config.Env}}'
+["PATH=/opt/venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin","GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305","PYTHON_VERSION=3.13.16","PYTHON_SHA256=f4b1bfb3c79b5bb11b8d228a12504163b4c0dab4d679828d8f5f26b6cb6ab35d","PYTHONDONTWRITEBYTECODE=1","PYTHONUNBUFFERED=1"]
+
+$ docker image inspect mercado-api:1.0 --format '{{.Config.User}} {{json .Config.Cmd}}'
+app ["uvicorn","app.main:app","--host","0.0.0.0","--port","8000"]
+
+$ docker run --rm mercado-api:1.0 ls -a /app /app/app
+/app:
+.
+..
+app
+
+/app/app:
+.
+..
+__init__.py
+cache.py
+config.py
+db.py
+main.py
+
+$ docker run --rm mercado-api:1.0 sh -c 'which gcc make git; ls /root/.cache 2>&1'
+ls: cannot access '/root/.cache': Permission denied
+
+$ docker run --rm mercado-api:1.0 python --version
+Python 3.13.16
+
+$ docker run --rm mercado-api:1.0   # sin contraseña la API se niega a arrancar
+    raise RuntimeError(f"Falta la configuración {nombre}")
+RuntimeError: Falta la configuración DB_PASSWORD
+
+$ docker run --rm -d --name api-prueba -p 8000:8000 -e DB_PASSWORD=temporal -e REDIS_PASSWORD=temporal mercado-api:1.0
+30dd4b25eda80898f697c3b6da884ef5e78a7efa6e41a00b45407f0c192ac247
+
+$ curl http://localhost:8000/health
+{"estado":"ok"}
+
+$ docker exec api-prueba whoami
+app
+
+$ docker exec api-prueba id
+uid=10001(app) gid=10001(app) groups=10001(app)
+
+$ docker exec api-prueba touch /app/app/hack.py   # el código es de root: app no puede modificarlo
+touch: cannot touch '/app/app/hack.py': Permission denied
+
+$ docker exec api-prueba cat /proc/1/cmdline | tr '\0' ' '   # PID 1 = uvicorn (forma exec)
+/opt/venv/bin/python /opt/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 
+
+$ docker inspect api-prueba --format '{{.State.Health.Status}}'
+healthy
+
+$ time docker stop api-prueba   # SIGTERM llega a uvicorn: se apaga al instante
+api-prueba
+
+real	0m0.679s
+user	0m0.045s
+sys	0m0.045s
