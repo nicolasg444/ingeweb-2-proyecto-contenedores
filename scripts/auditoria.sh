@@ -12,9 +12,14 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 
 echo "=== Parte 1: comandos del enunciado (coincidencias por nombre) ==="
-echo "--- git log -p | grep -iE \"password|secret|token\" (líneas con un valor asignado)"
-# Solo líneas agregadas/quitadas que asignan algo, para no listar comentarios
-git log -p | grep -iE "password|secret|token" | grep -E '^[+-][^+-]' | grep -E '[=:]' || echo "(sin coincidencias)"
+echo "--- git log -p | grep -iE \"password|secret|token\""
+echo "$(git log -p | grep -ciE "password|secret|token") líneas mencionan esas palabras (nombres de variables, rutas, documentación)."
+echo "Valores asignados a variables *PASSWORD*/*SECRET*/*TOKEN* en todo el historial (veces | valor):"
+# Extrae CLAVE=valor o CLAVE: valor y muestra cada valor distinto una vez, para revisarlos de un vistazo
+git log -p --all | grep -E '^\+' \
+    | grep -oE '[A-Z_]*(PASSWORD|SECRET|TOKEN)[A-Z_]*"?[=:] ?[^ ",;)}]+' \
+    | sed -E 's/^[A-Z_]+"?[=:] ?//' | sort | uniq -c | sort -rn
+echo "(Esperado: solo rutas /run/secrets/..., \${VAR}, <REDACTADA> y valores de prueba como solo-pruebas)"
 echo
 echo "--- git ls-files | grep -E \"\\.env\$|secrets/\""
 git ls-files | grep -E "\.env$|secrets/" || echo "(sin archivos .env ni secrets/ versionados)"

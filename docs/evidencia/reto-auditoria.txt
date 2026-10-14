@@ -1,0 +1,65 @@
+=== Parte 1: comandos del enunciado (coincidencias por nombre) ===
+--- git log -p | grep -iE "password|secret|token"
+269 líneas mencionan esas palabras (nombres de variables, rutas, documentación).
+Valores asignados a variables *PASSWORD*/*SECRET*/*TOKEN* en todo el historial (veces | valor):
+     12 <REDACTADA>
+      8 /run/secrets/db_app_password
+      6 solo-pruebas
+      5 no-aplica
+      5 /run/secrets/db_password
+      4 /run/secrets/redis_password
+      4 ...`
+      3 temporal
+      2 ${DB_PASSWORD:?Defina
+      1 solo-pruebas`
+      1 required
+      1 [^
+      1 ?mensaje
+      1 <valor>`**
+      1 <la
+      1 /run/secrets/...`
+      1 -/run/secrets/db_app_password
+(Esperado: solo rutas /run/secrets/..., ${VAR}, <REDACTADA> y valores de prueba como solo-pruebas)
+
+--- git ls-files | grep -E "\.env$|secrets/"
+(sin archivos .env ni secrets/ versionados)
+
+--- docker history --no-trunc mercado-api:1.0 | grep -iE "password|token"
+(sin coincidencias)
+
+=== Parte 2: búsqueda de los valores reales de los secretos ===
+ok   db_app_password no aparece en el historial de Git (git log -p --all)
+ok   db_app_password no aparece en docker history de mercado-api:1.0
+ok   db_app_password no aparece en docker image inspect de mercado-api:1.0
+ok   db_app_password no aparece en docker history de mercado-web:1.0
+ok   db_app_password no aparece en docker image inspect de mercado-web:1.0
+ok   db_app_password no aparece en los archivos de mercado-api:1.0
+ok   db_app_password no aparece en los archivos de mercado-web:1.0
+ok   db_app_password no aparece en docker inspect (Config.Env) de db
+ok   db_app_password no aparece en docker inspect (Config.Env) de redis
+ok   db_app_password no aparece en docker inspect (Config.Env) de api
+ok   db_app_password no aparece en docker inspect (Config.Env) de web
+ok   db_password no aparece en el historial de Git (git log -p --all)
+ok   db_password no aparece en docker history de mercado-api:1.0
+ok   db_password no aparece en docker image inspect de mercado-api:1.0
+ok   db_password no aparece en docker history de mercado-web:1.0
+ok   db_password no aparece en docker image inspect de mercado-web:1.0
+ok   db_password no aparece en los archivos de mercado-api:1.0
+ok   db_password no aparece en los archivos de mercado-web:1.0
+ok   db_password no aparece en docker inspect (Config.Env) de db
+ok   db_password no aparece en docker inspect (Config.Env) de redis
+ok   db_password no aparece en docker inspect (Config.Env) de api
+ok   db_password no aparece en docker inspect (Config.Env) de web
+ok   redis_password no aparece en el historial de Git (git log -p --all)
+ok   redis_password no aparece en docker history de mercado-api:1.0
+ok   redis_password no aparece en docker image inspect de mercado-api:1.0
+ok   redis_password no aparece en docker history de mercado-web:1.0
+ok   redis_password no aparece en docker image inspect de mercado-web:1.0
+ok   redis_password no aparece en los archivos de mercado-api:1.0
+ok   redis_password no aparece en los archivos de mercado-web:1.0
+ok   redis_password no aparece en docker inspect (Config.Env) de db
+ok   redis_password no aparece en docker inspect (Config.Env) de redis
+ok   redis_password no aparece en docker inspect (Config.Env) de api
+ok   redis_password no aparece en docker inspect (Config.Env) de web
+
+RESULTADO: sin hallazgos. Ningún valor de secreto aparece en Git, imágenes ni variables.

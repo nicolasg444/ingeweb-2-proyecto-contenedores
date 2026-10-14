@@ -1,0 +1,31 @@
+===== Evidencia final del reto (2026-10-14 13:05, commit 4ead79b) =====
+
+$ docker compose ps
+NAME                     IMAGE                STATUS                    PORTS
+mercado-vecino-api-1     mercado-api:1.0      Up 5 seconds (healthy)    8000/tcp
+mercado-vecino-db-1      postgres:17-alpine   Up 10 minutes (healthy)   5432/tcp
+mercado-vecino-redis-1   redis:7.4-alpine     Up 8 minutes (healthy)    6379/tcp
+mercado-vecino-web-1     mercado-web:1.0      Up 3 seconds (healthy)    0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+
+$ docker image ls   (imágenes del proyecto)
+REPOSITORY:TAG              IMAGE ID       SIZE
+mercado-api:1.0             d93f98e3e713   286MB
+mercado-web:1.0             a669c512de58   90.3MB
+mercado-api:test            4412eeebe01e   317MB
+mercado-web:build           366fa5c1c866   320MB
+mercado-api:ingenua         605d1cc1ff28   1.78GB
+redis:7.4-alpine            858f009f9709   57.8MB
+postgres:17-alpine          b0f9560a2de0   424MB
+
+$ docker volume ls --filter name=mercado-vecino
+DRIVER    VOLUME NAME
+local     mercado-vecino_pgdata
+local     mercado-vecino_redisdata
+
+$ docker network ls --filter name=mercado-vecino
+NETWORK ID     NAME                      DRIVER    SCOPE
+7ece853cd48e   mercado-vecino_backend    bridge    local
+14d584afcf7a   mercado-vecino_frontend   bridge    local
+
+$ curl http://localhost:8080/api/tiendas   (en este equipo :8081)
+[{"id":1,"nombre":"Tienda Doña Rosa","barrio":"Chapinero"},{"id":2,"nombre":"Fruver La Cosecha","barrio":"Teusaquillo"},{"id":3,"nombre":"Panadería El Trigal","barrio":"Suba"},{"id":4,"nombre":"Droguería San Jorge","barrio":"Kennedy"},{"id":5,"nombre":"Miscelánea El Vecino","barrio":"Usaquén"}]
