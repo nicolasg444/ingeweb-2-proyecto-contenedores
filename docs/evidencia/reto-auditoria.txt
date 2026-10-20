@@ -1,24 +1,28 @@
 === Parte 1: comandos del enunciado (coincidencias por nombre) ===
 --- git log -p | grep -iE "password|secret|token"
-269 líneas mencionan esas palabras (nombres de variables, rutas, documentación).
+418 líneas mencionan esas palabras (nombres de variables, rutas, documentación).
 Valores asignados a variables *PASSWORD*/*SECRET*/*TOKEN* en todo el historial (veces | valor):
-     12 <REDACTADA>
-      8 /run/secrets/db_app_password
-      6 solo-pruebas
-      5 no-aplica
-      5 /run/secrets/db_password
-      4 /run/secrets/redis_password
-      4 ...`
-      3 temporal
-      2 ${DB_PASSWORD:?Defina
-      1 solo-pruebas`
-      1 required
-      1 [^
-      1 ?mensaje
-      1 <valor>`**
-      1 <la
-      1 /run/secrets/...`
-      1 -/run/secrets/db_app_password
+     24 <REDACTADA>
+     16 /run/secrets/db_app_password
+     14 solo-pruebas
+     10 no-aplica
+     10 /run/secrets/db_password
+      8 /run/secrets/redis_password
+      8 ...`
+      6 temporal
+      4 ${DB_PASSWORD:?Defina
+      2 solo-pruebas`
+      2 required
+      2 [^
+      2 ?mensaje
+      2 ?Defina
+      2 <valor>`**
+      2 <la
+      2 /run/secrets/...`
+      2 -/run/secrets/db_app_password
+      1 solo-pruebas-clave-de-firma-de-32-bytes
+      1 no-aplica-en-el-ejercicio-5-sin-sesiones-reales
+      1 /run/secrets/jwt_secret
 (Esperado: solo rutas /run/secrets/..., ${VAR}, <REDACTADA> y valores de prueba como solo-pruebas)
 
 --- git ls-files | grep -E "\.env$|secrets/"
@@ -50,6 +54,17 @@ ok   db_password no aparece en docker inspect (Config.Env) de db
 ok   db_password no aparece en docker inspect (Config.Env) de redis
 ok   db_password no aparece en docker inspect (Config.Env) de api
 ok   db_password no aparece en docker inspect (Config.Env) de web
+ok   jwt_secret no aparece en el historial de Git (git log -p --all)
+ok   jwt_secret no aparece en docker history de mercado-api:1.0
+ok   jwt_secret no aparece en docker image inspect de mercado-api:1.0
+ok   jwt_secret no aparece en docker history de mercado-web:1.0
+ok   jwt_secret no aparece en docker image inspect de mercado-web:1.0
+ok   jwt_secret no aparece en los archivos de mercado-api:1.0
+ok   jwt_secret no aparece en los archivos de mercado-web:1.0
+ok   jwt_secret no aparece en docker inspect (Config.Env) de db
+ok   jwt_secret no aparece en docker inspect (Config.Env) de redis
+ok   jwt_secret no aparece en docker inspect (Config.Env) de api
+ok   jwt_secret no aparece en docker inspect (Config.Env) de web
 ok   redis_password no aparece en el historial de Git (git log -p --all)
 ok   redis_password no aparece en docker history de mercado-api:1.0
 ok   redis_password no aparece en docker image inspect de mercado-api:1.0
