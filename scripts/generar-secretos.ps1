@@ -11,7 +11,7 @@ if (-not (Test-Path ".env")) {
 
 New-Item -ItemType Directory -Force "secrets" | Out-Null
 
-foreach ($nombre in "db_password", "db_app_password", "redis_password") {
+foreach ($nombre in "db_password", "db_app_password", "redis_password", "jwt_secret") {
     $archivo = "secrets\$nombre.txt"
     if ((Test-Path $archivo) -and (Get-Item $archivo).Length -gt 0) {
         Write-Host "Ya existe $archivo (no se toca)"

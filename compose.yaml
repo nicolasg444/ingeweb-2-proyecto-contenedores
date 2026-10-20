@@ -73,8 +73,10 @@ services:
       DB_PASSWORD_FILE: /run/secrets/db_app_password
       REDIS_HOST: redis
       REDIS_PASSWORD_FILE: /run/secrets/redis_password
+      # Clave con la que la API firma las sesiones (JWT) de los usuarios
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
       CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-60}
-    secrets: [db_app_password, redis_password]
+    secrets: [db_app_password, redis_password, jwt_secret]
     depends_on:
       db:
         condition: service_healthy
@@ -127,3 +129,5 @@ secrets:
     file: ./secrets/db_app_password.txt
   redis_password:
     file: ./secrets/redis_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt

@@ -72,3 +72,48 @@ def guardar(clave: str, datos, ttl: int = config.CACHE_TTL_SECONDS) -> None:
         _cliente.set(clave, json.dumps(datos), ex=ttl)
     except redis.RedisError as error:
         _registrar_fallo("guardar", clave, error)
+
+
+def incrementar(clave: str, ttl: int) -> int | None:
+    """Suma 1 al contador y le pone vencimiento al crearlo. None si Redis no está disponible."""
+    if not _disponible():
+        return None
+    try:
+        tuberia = _cliente.pipeline()
+        tuberia.incr(clave)
+        tuberia.expire(clave, ttl, nx=True)  # nx: la ventana no se reinicia con cada intento
+        valor, _ = tuberia.execute()
+    except redis.RedisError as error:
+        _registrar_fallo("incrementar", clave, error)
+        return None
+    return int(valor)
+
+
+def contador(clave: str) -> int:
+    if not _disponible():
+        return 0
+    try:
+        return int(_cliente.get(clave) or 0)
+    except redis.RedisError as error:
+        _registrar_fallo("leer", clave, error)
+        return 0
+
+
+def borrar(clave: str) -> None:
+    if not _disponible():
+        return
+    try:
+        _cliente.delete(clave)
+    except redis.RedisError as error:
+        _registrar_fallo("borrar", clave, error)
+
+
+def diagnostico() -> dict:
+    """Estado de Redis para el panel de ingeniería. No activa la pausa: solo observa."""
+    inicio = time.perf_counter()
+    try:
+        _cliente.ping()
+        claves = _cliente.dbsize()
+    except redis.RedisError:
+        return {"ok": False}
+    return {"ok": True, "ms": round((time.perf_counter() - inicio) * 1000, 1), "claves": claves}

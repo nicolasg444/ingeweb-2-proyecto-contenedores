@@ -25,7 +25,7 @@ generar() {
     fi
 }
 
-for nombre in db_password db_app_password redis_password; do
+for nombre in db_password db_app_password redis_password jwt_secret; do
     archivo="secrets/${nombre}.txt"
     if [ -s "$archivo" ]; then
         echo "Ya existe $archivo (no se toca)"

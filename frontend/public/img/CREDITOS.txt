@@ -1,0 +1,120 @@
+Créditos de las fotografías de Mercado Vecino
+=============================================
+
+Todas las fotos provienen de Wikimedia Commons y se usan según su licencia.
+Se recortaron y redimensionaron (obra derivada); las de licencia CC BY-SA mantienen esa licencia.
+
+/img/productos/arroz.jpg
+  Autor:    Seb35
+  Licencia: CC BY-SA 3.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Thai_jasmine_rice_uncooked_periodic.jpg
+
+/img/productos/huevos.jpg
+  Autor:    Schnee (User:Schneelocke)
+  Licencia: CC BY-SA 3.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Eggs_in_carton.jpg
+
+/img/productos/leche.jpg
+  Autor:    www.Pixel.la Free Stock Photos
+  Licencia: CC0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Milk_bottle_and_two_doughnuts.jpg
+
+/img/productos/cafe.jpg
+  Autor:    MarkSweep
+  Licencia: Public domain
+  Fuente:   https://commons.wikimedia.org/wiki/File:Roasted_coffee_beans.jpg
+
+/img/productos/aguacate.jpg
+  Autor:    Ivar Leidus
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Avocado_Hass_-_single_and_halved.jpg
+
+/img/productos/tomate.jpg
+  Autor:    தீப்தி செந்தில்
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Round_Red_Tomato.jpg
+
+/img/productos/papa.jpg
+  Autor:    Bff
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Solanum_tuberosum_Red_Scarlett20170523_7825.jpg
+
+/img/productos/lulo.jpg
+  Autor:    Cozzycovers
+  Licencia: Public domain
+  Fuente:   https://commons.wikimedia.org/wiki/File:Solanum_quitoense_unripe_fruit_flesh.jpg
+
+/img/productos/pan.jpg
+  Autor:    Jeremy Keith from Brighton & Hove, United Kingdom
+  Licencia: CC BY 2.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Bread_rolls_(5959538820).jpg
+
+/img/productos/almojabana.jpg
+  Autor:    Miguel Vaca
+  Licencia: CC BY 2.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Galguer%C3%ADas_II.jpg
+
+/img/productos/pandebono.jpg
+  Autor:    vasquezcarlosm
+  Licencia: CC BY-SA 2.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Pandebono.jpg
+
+/img/productos/roscon.jpg
+  Autor:    Swapnil Acharya
+  Licencia: CC BY-SA 3.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Sel_Roti.jpg
+
+/img/productos/acetaminofen.jpg
+  Autor:    沈澄心
+  Licencia: CC0
+  Fuente:   https://commons.wikimedia.org/wiki/File:A_blister_pack_of_Androcur_50mg_tablets_in_Turkey_(obverse).jpg
+
+/img/productos/suero.jpg
+  Autor:    Cjp24
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Oral_rehydration_salts_-_Packet.jpg
+
+/img/productos/alcohol.jpg
+  Autor:    João Carlos Ávila
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:%C3%81lcool_Isoprop%C3%ADlico.png
+
+/img/productos/cuaderno.jpg
+  Autor:    Dietmar Rabich
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Spiralbinder%C3%BCcken_--_2022_--_9722.jpg
+
+/img/productos/pilas.jpg
+  Autor:    ajay_suresh
+  Licencia: CC BY 2.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:AA_Batteries_(51825378856).jpg
+
+/img/productos/bombillo.jpg
+  Autor:    Loadmaster (David R. Tribble)
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:LED-E27-Light-Bulb-1134.jpg
+
+/img/tiendas/tienda.jpg
+  Autor:    Gary Hoover
+  Licencia: CC BY 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Grocery_Store_display-1979-17.jpg
+
+/img/tiendas/fruver.jpg
+  Autor:    Acabashi
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Outdoor_market_fruit_and_vegetable_stall_Market_Place_Romford_London_01.jpg
+
+/img/tiendas/panaderia.jpg
+  Autor:    Kurt Kaiser
+  Licencia: CC0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Bread_at_a_Massachusetts_bakery.jpg
+
+/img/tiendas/drogueria.jpg
+  Autor:    User:Mattes
+  Licencia: Public domain
+  Fuente:   https://commons.wikimedia.org/wiki/File:Hospital_Pharmacy.JPG
+
+/img/tiendas/miscelanea.jpg
+  Autor:    Jegadeeswaran natarajan
+  Licencia: CC BY-SA 4.0
+  Fuente:   https://commons.wikimedia.org/wiki/File:Stationery_Wholesale_Shop_notebooks.jpg

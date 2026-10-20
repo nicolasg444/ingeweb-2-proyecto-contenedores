@@ -21,7 +21,8 @@ COPY requirements-dev.txt .
 RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY . .
 # Valores de mentira válidos solo en este RUN; esta etapa no llega a la imagen final
-RUN DB_PASSWORD=solo-pruebas REDIS_PASSWORD=solo-pruebas pytest -q
+RUN DB_PASSWORD=solo-pruebas REDIS_PASSWORD=solo-pruebas \
+    JWT_SECRET=solo-pruebas-clave-de-firma-de-32-bytes pytest -q
 
 # ---------- Etapa 3: runtime (imagen final) ----------
 # Parte de una base limpia: nada del builder llega salvo lo que se copia con --from

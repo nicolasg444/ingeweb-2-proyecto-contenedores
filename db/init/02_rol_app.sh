@@ -37,10 +37,10 @@ GRANT CONNECT ON DATABASE :"db_name" TO :"app_user";
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 GRANT USAGE ON SCHEMA public TO :"app_user";
 
--- Catálogo: solo lectura. Pedidos: leer y crear; nunca modificar ni borrar
+-- Catálogo: solo lectura. Usuarios y pedidos: leer y crear; nunca modificar ni borrar
 GRANT SELECT ON tiendas, productos TO :"app_user";
-GRANT SELECT, INSERT ON pedidos, pedido_items TO :"app_user";
-GRANT USAGE ON SEQUENCE pedidos_id_seq TO :"app_user";
+GRANT SELECT, INSERT ON usuarios, pedidos, pedido_items TO :"app_user";
+GRANT USAGE ON SEQUENCE usuarios_id_seq, pedidos_id_seq TO :"app_user";
 EOSQL
 
 echo "02_rol_app.sh: rol '$APP_DB_USER' creado con permisos mínimos"

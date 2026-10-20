@@ -39,6 +39,8 @@ services:
       # La API final también usa Redis; aquí no hay Redis y la caché queda inactiva
       REDIS_HOST: redis-inexistente
       REDIS_PASSWORD: no-aplica
+      # El inicio de sesión se agregó después del Ejercicio 5; aquí solo permite arrancar
+      JWT_SECRET: no-aplica-en-el-ejercicio-5-sin-sesiones-reales
     depends_on:
       db:
         condition: service_healthy

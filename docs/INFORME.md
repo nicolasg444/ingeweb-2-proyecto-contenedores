@@ -528,6 +528,30 @@ producción, un gestor de secretos.
 
 ---
 
+## 13. Extensión: cuentas, fotos y Modo ingeniero ([evidencia](evidencia/extension-pruebas.txt))
+
+Después del reto se convirtió la página en una tienda completa, manteniendo todas las reglas del caso
+(cero credenciales en Git, imágenes o variables; rol de mínimo privilegio; healthchecks).
+
+| Funcionalidad | Cómo se hizo | Decisión y alternativa descartada |
+|---|---|---|
+| Fotos de tiendas y productos | Columna `imagen_url` en `tiendas` y `productos`; los archivos viven en `frontend/public/img/` y los sirve Nginx | **Descartado:** enlazar directo a Wikimedia. Depende de internet en el salón y del límite de peticiones de un servidor ajeno. Las fotos son de Wikimedia Commons con licencia libre (créditos en `public/img/CREDITOS.txt`) |
+| Cuentas de usuario | Tabla `usuarios`; hash `scrypt` (biblioteca estándar) con sal por usuario; sesión con JWT HS256 | **Descartado:** guardar la contraseña cifrada de forma reversible o con SHA-256 simple: un hash rápido se rompe por fuerza bruta. `scrypt` cuesta 16 MiB por intento |
+| Clave que firma las sesiones | Nuevo secreto de Compose `jwt_secret`, leído con el mismo `leer_secreto()` | **Descartado:** `JWT_SECRET` en `.env`: quedaría en `docker inspect` igual que en el Ejercicio 6 |
+| Freno a la fuerza bruta | Contador `login:fallos:<correo>` en Redis con vencimiento (5 intentos / 5 min → 429) | Si Redis cae, el login sigue funcionando sin freno: se prefiere disponibilidad a dejar a todos por fuera |
+| Pedidos privados | `GET /pedidos/{id}` filtra por `usuario_id`; un pedido ajeno da 404 | **Descartado:** filtrar solo por id (vulnerabilidad IDOR: cambiar el número en la URL mostraría pedidos de otros) |
+| Rol de la app | `mercado_app` recibe `SELECT, INSERT` en `usuarios`; sigue sin `UPDATE`/`DELETE` | Mínimo privilegio igual que antes |
+| Modo ingeniero | La API agrega `Server-Timing` (encabezado estándar) y `X-Atendido-Por`; `GET /sistema` mide db y redis; el frontend dibuja el recorrido de cada petición | Hace visible la arquitectura del caso: redes, caché HIT/MISS, réplicas |
+| Reparto entre réplicas | `resolver 127.0.0.11 valid=10s` + variable en `proxy_pass` | **Hallazgo:** con `proxy_pass http://api:8000/` Nginx resuelve el nombre una sola vez al arrancar; con `--scale api=3` las 9 peticiones de prueba fueron al mismo contenedor. Con el resolver se reparten (7/3/2 de 12) y no hay que reiniciar `web`. **Segundo hallazgo:** al bajar a 1 réplica, durante 10 s Nginx aún probaba IPs de contenedores borrados y una petición tardó 39 s. Con `proxy_connect_timeout 2s` y `proxy_next_upstream` el peor caso quedó en 4 s |
+| Política CSP | `Content-Security-Policy` en Nginx: scripts, fotos y peticiones solo del mismo sitio | Ahora que hay sesiones, un script inyectado podría robar el token; la CSP impide cargarlo desde otro dominio |
+
+Pruebas: la etapa `test` pasó de 9 a **21 pruebas** (hash, token alterado, token vencido, login sin
+revelar si el correo existe, bloqueo por intentos, pedido ajeno). Un recorrido con Chrome sin interfaz
+(registro → canasta → pedido → Mis pedidos) terminó sin errores de consola
+([captura del Modo ingeniero](evidencia/captura-modo-ingeniero.png), [Mis pedidos](evidencia/captura-mis-pedidos.png)).
+
+---
+
 ## Anexo — Índice de evidencias
 
 | Archivo | Contenido |

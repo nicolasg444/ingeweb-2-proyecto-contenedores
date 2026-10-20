@@ -1,0 +1,75 @@
+===== Extensión: cuentas, fotos y Modo ingeniero (2026-10-20 00:31, commit 4235591) =====
+# Las contraseñas de prueba de este archivo son de cuentas creadas solo para la demostración.
+
+$ docker build --target test -t mercado-api:test ./api
+#15 1.325 21 passed in 0.69s
+
+$ docker compose ps
+NAME                     STATUS
+mercado-vecino-api-1     Up 13 minutes (healthy)
+mercado-vecino-db-1      Up 14 minutes (healthy)
+mercado-vecino-redis-1   Up 23 seconds (healthy)
+mercado-vecino-web-1     Up 4 minutes (healthy)
+
+$ curl http://localhost:8081/api/tiendas/3/productos   (cada producto trae el link de su foto)
+Pan aliñado            /img/productos/pan.jpg
+Almojábana             /img/productos/almojabana.jpg
+Pandebono              /img/productos/pandebono.jpg
+Roscón de arequipe     /img/productos/roscon.jpg
+
+$ ¿cargan las 23 fotos cuyos links están en la base de datos?
+23/23 fotos responden 200 image/jpeg
+
+$ POST /api/auth/registro
+{'usuario': {'id': 18, 'nombre': 'Demo Clase', 'email': 'demo1792474291@ejemplo.co'}, 'token': 'eyJhbGciOiJIUzI1NiIsInR5…'}
+
+$ POST /api/auth/registro con el mismo correo
+{"detail":"Ya existe una cuenta con ese correo"}  → 409
+
+$ SELECT email, clave_hash FROM usuarios  (la contraseña nunca se guarda en claro)
+demo1792474291@ejemplo.co|scrypt$16384$8$1$FMhcBe8NgCB7dAEIhejQWw=…
+
+$ POST /api/pedidos SIN token
+{"detail":"Inicia sesión para continuar"}  → 401
+
+$ POST /api/pedidos CON token
+{"id":8,"total":11200,"estado":"recibido"}
+
+$ GET /api/mis-pedidos   (con las fotos de lo comprado)
+#8 Fruver La Cosecha $11200: 2x Aguacate Hass (unidad) (/img/productos/aguacate.jpg), 1x Lulo 1 lb (/img/productos/lulo.jpg)
+
+$ Otra cuenta pide GET /api/pedidos/8
+{"detail":"Pedido no encontrado"}  → 404
+
+$ Token alterado
+{"detail":"Sesión inválida"}  → 401
+
+$ 6 intentos de login con contraseña equivocada
+401 401 401 401 401 401   (el 6.º queda bloqueado: 429)
+
+$ El rol de la app no puede borrar usuarios
+ERROR:  permission denied for table usuarios
+
+$ GET /api/sistema
+{'api': {'contenedor': 'bb4d97d4da27', 'python': '3.13.16'}, 'cache_ttl': 60, 'db': {'ok': True, 'ms': 8.7, 'version': '17.11', 'pedidos': 8}, 'redis': {'ok': True, 'ms': 1.9, 'claves': 3}}
+
+$ Encabezados de traza y política CSP
+x-cache: MISS
+server-timing: app;dur=8.6
+x-atendido-por: bb4d97d4da27
+Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+$ docker compose up -d --scale api=3   (12 peticiones; sin reiniciar web)
+      4 x-atendido-por: 03f88fd84c48
+      2 x-atendido-por: 454b68717936
+      6 x-atendido-por: bb4d97d4da27
+
+$ Bajar a 1 réplica: las 3 primeras peticiones aún pueden tocar IPs viejas (DNS recordado 10 s)
+200 en 0.004387s
+200 en 0.003919s
+200 en 4.009196s
+
+$ docker compose stop redis   (la tienda sigue respondiendo desde PostgreSQL)
+200 en 1.015177s
+200 en 0.013919s
+200 en 0.013060s

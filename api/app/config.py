@@ -24,3 +24,11 @@ REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
 REDIS_PASSWORD = leer_secreto("REDIS_PASSWORD")
 CACHE_TTL_SECONDS = int(os.getenv("CACHE_TTL_SECONDS", "60"))
+
+# Clave con la que la API firma los tokens de sesión (JWT). Si se filtra, cualquiera puede
+# fabricar sesiones válidas: por eso llega como secreto de Compose, igual que las contraseñas
+JWT_SECRET = leer_secreto("JWT_SECRET")
+TOKEN_HORAS = int(os.getenv("TOKEN_HORAS", "8"))
+# Intentos de inicio de sesión fallidos por correo antes de bloquear (ventana en Redis)
+LOGIN_MAX_FALLOS = int(os.getenv("LOGIN_MAX_FALLOS", "5"))
+LOGIN_VENTANA_SEGUNDOS = int(os.getenv("LOGIN_VENTANA_SEGUNDOS", "300"))
