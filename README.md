@@ -112,10 +112,7 @@ mercado-vecino/
 ├── scripts/
 │   ├── generar-secretos.sh  crea .env y secrets/*.txt (también hay versión .ps1)
 │   └── auditoria.sh         auditoría de credenciales del Ejercicio 6
-├── docs/
-│   ├── INFORME.md           desarrollo de los 6 ejercicios, mediciones, respuestas y reto
-│   ├── SOCIALIZACION.md     guion de la presentación de 3 minutos
-│   └── evidencia/           salidas de terminal reales
+├── docs/evidencia/          compose ps, tamaño de imágenes, auditoría y captura del frontend
 ├── compose.yaml             stack de producción
 ├── compose.override.yaml    ajustes de desarrollo (se fusionan automáticamente)
 ├── .env.example             configuración sin secretos (sí se versiona)
@@ -143,6 +140,3 @@ mercado-vecino/
 - **`02_rol_app.sh: bad interpreter` o `\r`**: el script se guardó con CRLF. `.gitattributes` fuerza LF;
   si lo editó en Windows, conviértalo con `dos2unix db/init/02_rol_app.sh`.
 - **El puerto 8080 está ocupado**: cambie `WEB_PORT` en `.env`.
-- **`secret jwt_secret ... not found`** o **`column "imagen_url" does not exist`** en un clon anterior a
-  la versión con cuentas: ejecute `./scripts/generar-secretos.sh` (crea solo lo que falta) y recree la base
-  con `docker compose down -v` antes de `up`, porque el esquema cambió.
